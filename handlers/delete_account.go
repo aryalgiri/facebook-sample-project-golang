@@ -1,27 +1,42 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+
 	"github.com/sample-fb/models"
 )
 
-// DeleteAccount is used to delete the account
-func DeleteAccount(w http.ResponseWriter, r *http.Request) {
+// deleteAccount is used to delete the account
+func deleteAccount(w http.ResponseWriter, r *http.Request) {
+	// capture URL Params
 	urlParams := mux.Vars(r)
-	var temp []models.Account
 
-	// get the accounts from list
-	for i := range accounts {
-		if urlParams["id"] != accounts[i].ID {
-			temp = append(temp, accounts[i])
-		} else {
-			fmt.Printf("Account %v deleted successfully\n", urlParams["id"])
-		}
+	// Get Account details from DB using ID
+	accs, err := dbmgr.GetAccount(urlParams["id"], "")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
 	}
-	accounts = temp
+
+	// if length of accounts is zero, then account with id not found
+	if len(accs) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("No account found with given ID"))
+		return
+	}
+
+	// update account status to deleted
+	accs[0].Status = models.StatusDeleted
+
+	// save account details to db
+	if err = dbmgr.SaveAccount(&accs[0]); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
 	w.WriteHeader(http.StatusNoContent)
 }

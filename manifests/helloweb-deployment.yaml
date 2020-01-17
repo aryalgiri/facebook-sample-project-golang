@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-fb
+  labels:
+    app: samplefb
+spec:
+  selector:
+    matchLabels:
+      app: samplefb
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: samplefb
+        tier: web
+    spec:
+      containers:
+      - name: sample-fb
+        image: gcr.io/gcptest1/sample-fb:1.0
+        ports:
+        - containerPort: 8080

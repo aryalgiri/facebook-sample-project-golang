@@ -4,22 +4,33 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/lib/pq" //initizing driver
+	"github.com/google/logger"
+
 	"github.com/sample-fb/config"
+	"github.com/sample-fb/models"
 )
 
-var (
-	db  *sql.DB
-	err error
-)
+// Datastore is an interface used to hold db methods
+type Datastore interface {
+	// SaveAccount is used to save the account details into DB
+	SaveAccount(account *models.Account) error
+	// GetAccount is used to retrieve account details from DB
+	GetAccount(id, email string) ([]models.Account, error)
+}
 
-// NewClient is used to establish a connection between microservice and database
-func NewClient() {
+// hold db connection values
+type dbClient struct {
+	db *sql.DB
+}
+
+// NewClient is used to establish the connection between postgresql and our service
+func NewClient() Datastore {
 	var err error
-	//dbable database connections
-	db, err = sql.Open(config.DBName, fmt.Sprintf("host=%s port=%v user=%s password=%s dbname=%s sslmode=disable", config.DBHost, config.DBPort, config.DBUserName, config.DBPassword, config.DBName))
+	// enable database connections
+	db, err := sql.Open(config.DBName, fmt.Sprintf("host=%s port=%v user=%s password=%s dbname=%s sslmode=disable", config.DBHost, config.DBPort, config.DBUserName, config.DBPassword, config.DBName))
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully established DB connection")
+	logger.Info("Successfully established DB connection")
+	return &dbClient{db: db}
 }

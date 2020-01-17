@@ -2,15 +2,15 @@ package models
 
 // Account is the data model of the sample-fb service
 type Account struct {
-	ID          string   `json:"id,omitempty"`
-	FirstName   string   `json:"firstname,omitempty"`
-	MiddleName  string   `json:"middlename,omitempty"`
-	LastName    string   `json:"lastname,omitempty"`
-	Email       string   `json:"email,omitempty"`
-	PhoneNumber string   `json:"phonenumber,omitempty"`
-	OldPassword string   `json:"oldpassword,omitempty"`
-	Password    string   `json:"password,omitempty"`
-	Gender      string   `json:"gender,omitempty"`
-	Address     *Address `json:"address,omitempty"`
-	LoginToken  string   `json:"logintoken,omitempty"`
+	ID          string   `json:"id,omitempty" db:"id"`
+	Firstname   string   `json:"firstname,omitempty" db:"firstname"`
+	MiddleName  string   `json:"middlename,omitempty" db:"middlename"`
+	Lastname    string   `json:"lastname,omitempty" db:"lastname"`
+	Email       string   `json:"email,omitempty" db:"email"`
+	PhoneNumber string   `json:"phonenumber,omitempty" db:"phonenumber"`
+	Password    string   `json:"password,omitempty" db:"password"`
+	Gender      string   `json:"gender,omitempty" db:"gender"`
+	Address     *Address `json:"address,omitempty" db:"address"`
+	Status      string   `json:"status,omitempty" db:"status"`
+	OldPassword string   `json:"oldpassword,omitempty" db:"oldpassword"`
 }
